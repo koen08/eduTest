@@ -15,12 +15,12 @@ public class MainApp {
         File myFile = new File(readFile + ".txt");
         if (!myFile.exists()){
             System.out.println("File results create");
-            myFile.createNewFile();
+            if (!myFile.createNewFile()) System.out.println("File results did not created");
         }
         File results = new File(writeFile + ".txt");
         if(!results.exists()) {
            System.out.println("File results create");
-           results.createNewFile();
+           if (!results.createNewFile()) System.out.println("File results did not created");
          }
        FileManager fileManager = new FileManagerImpl(myFile, results);
        fileManager.startCollectFrequency();
