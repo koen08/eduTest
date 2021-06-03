@@ -1,4 +1,4 @@
-package service;
+package com.koen.service;
 
 import java.io.IOException;
 

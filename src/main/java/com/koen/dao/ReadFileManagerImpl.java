@@ -1,4 +1,4 @@
-package dao;
+package com.koen.dao;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,12 +19,12 @@ public class ReadFileManagerImpl implements ReadFileManager {
         int character;
         while ((character = getCharacter()) != -1) {
             amountCharacterByFile++;
-            if (!mapWithFrequency.containsKey((char)character)) {
-                mapWithFrequency.put((char)character, 1);
+            if (!mapWithFrequency.containsKey((char) character)) {
+                mapWithFrequency.put((char) character, 1);
             } else {
-                Integer countFrequencyObject = mapWithFrequency.get((char)character);
+                Integer countFrequencyObject = mapWithFrequency.getOrDefault((char) character, 1);
                 countFrequencyObject++;
-                mapWithFrequency.put((char)character, countFrequencyObject);
+                mapWithFrequency.put((char) character, countFrequencyObject);
             }
         }
         close();

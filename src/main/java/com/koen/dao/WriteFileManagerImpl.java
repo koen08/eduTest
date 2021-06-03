@@ -1,4 +1,4 @@
-package dao;
+package com.koen.dao;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

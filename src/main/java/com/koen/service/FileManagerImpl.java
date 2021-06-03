@@ -1,9 +1,9 @@
-package service;
+package com.koen.service;
 
-import dao.ReadFileManager;
-import dao.ReadFileManagerImpl;
-import dao.WriteFileManager;
-import dao.WriteFileManagerImpl;
+import com.koen.dao.ReadFileManager;
+import com.koen.dao.ReadFileManagerImpl;
+import com.koen.dao.WriteFileManager;
+import com.koen.dao.WriteFileManagerImpl;
 
 import java.io.File;
 import java.io.FileReader;
