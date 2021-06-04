@@ -9,4 +9,8 @@ public interface WriteFileManager {
     void writeMapToFile(Map<Character, Integer> mapWithFrequency) throws IOException;
 
     void closeWrite() throws IOException;
+
+    String generateSlash(double percent);
+
+    StringBuilder getTextWithFrequencyToWrite(Character key, Integer value);
 }

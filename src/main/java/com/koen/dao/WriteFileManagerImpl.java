@@ -1,5 +1,8 @@
 package com.koen.dao;
 
+import com.koen.service.Calculate;
+import com.koen.service.CalculateImpl;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,24 +20,35 @@ public class WriteFileManagerImpl implements WriteFileManager {
     public void writeMapToFile(Map<Character, Integer> mapWithFrequency) throws IOException {
         StringBuilder textLine = new StringBuilder();
         for (Map.Entry<Character, Integer> map : mapWithFrequency.entrySet()) {
-            double percent = getPercent(map.getValue());
-            textLine.append(map.getKey()).append(" (").append(percent).
-                    append("%):").append(" ").append(generateSlash(percent));
+            if (map.getKey() != '\n') {
+                textLine.append(getTextWithFrequencyToWrite(map.getKey(), map.getValue()));
+            } else {
+                textLine.append(getTextWithFrequencyToWrite('_', map.getValue()));
+            }
             writeTextLine(textLine.toString());
-            textLine = new StringBuilder();
+            textLine.setLength(0);
         }
         closeWrite();
     }
 
-    private double getPercent(int valueFrequency) {
-        double division = (double) valueFrequency / amountCharacterByFile;
-        double percent = division * 100;
-        return Math.round(percent);
+    @Override
+    public StringBuilder getTextWithFrequencyToWrite(Character key, Integer value) {
+        Calculate calculate = new CalculateImpl();
+        double percent = calculate.getPercent(value, amountCharacterByFile);
+        return new StringBuilder().append(key).append(" (").append(String.format("%.1f%%", percent)).
+                append("):").append(" ").append(generateSlash(percent));
     }
 
-    private String generateSlash(double percent) {
+    @Override
+    public String generateSlash(double percent) {
         StringBuilder stringBuilder = new StringBuilder();
-        double slashCount = (percent * (amountCharacterByFile * 2)) / 100;
+        double slashCount;
+        if (amountCharacterByFile < 100) {
+            slashCount = (percent * (amountCharacterByFile * 2)) / 100;
+        } else {
+            slashCount = (percent * (amountCharacterByFile * 0.5)) / 100;
+        }
+
         double slashCountRounded = Math.round(slashCount);
         for (int i = 0; i < slashCountRounded; i++) {
             stringBuilder.append("#");
