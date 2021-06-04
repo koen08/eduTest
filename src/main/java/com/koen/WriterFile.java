@@ -1,45 +1,42 @@
-package com.koen.dao;
+package com.koen;
 
-import com.koen.service.Calculate;
-import com.koen.service.CalculateImpl;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
 
-public class WriteFileManagerImpl implements WriteFileManager {
+public class WriterFile {
     private final BufferedWriter bufferedWriter;
     private final int amountCharacterByFile;
 
-    public WriteFileManagerImpl(FileWriter fileWriter, int amountCharacterByFile) {
-        this.bufferedWriter = new BufferedWriter(fileWriter);
+    public WriterFile(OutputStream outputStream, int amountCharacterByFile) {
+        this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
         this.amountCharacterByFile = amountCharacterByFile;
     }
 
-    public void writeMapToFile(Map<Character, Integer> mapWithFrequency) throws IOException {
-        StringBuilder textLine = new StringBuilder();
-        for (Map.Entry<Character, Integer> map : mapWithFrequency.entrySet()) {
-            if (map.getKey() != '\n') {
-                textLine.append(getTextWithFrequencyToWrite(map.getKey(), map.getValue()));
-            } else {
-                textLine.append(getTextWithFrequencyToWrite('_', map.getValue()));
+    public void writeMapToFile(Map<Character, Integer> mapWithFrequency) {
+        try {
+            StringBuilder textLine = new StringBuilder();
+            for (Map.Entry<Character, Integer> map : mapWithFrequency.entrySet()) {
+                if (map.getKey() != '\n') {
+                    textLine.append(getTextWithFrequencyToWrite(map.getKey(), map.getValue()));
+                } else {
+                    textLine.append(getTextWithFrequencyToWrite('_', map.getValue()));
+                }
+                writeTextLine(textLine.toString());
+                textLine.setLength(0);
             }
-            writeTextLine(textLine.toString());
-            textLine.setLength(0);
+            closeWrite();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        closeWrite();
     }
 
-    @Override
     public StringBuilder getTextWithFrequencyToWrite(Character key, Integer value) {
-        Calculate calculate = new CalculateImpl();
-        double percent = calculate.getPercent(value, amountCharacterByFile);
+        FrequencyChar frequencyChar = new FrequencyCharImpl();
+        double percent = frequencyChar.getPercent(value, amountCharacterByFile);
         return new StringBuilder().append(key).append(" (").append(String.format("%.1f%%", percent)).
                 append("):").append(" ").append(generateSlash(percent));
     }
 
-    @Override
     public String generateSlash(double percent) {
         StringBuilder stringBuilder = new StringBuilder();
         double slashCount;
@@ -48,7 +45,6 @@ public class WriteFileManagerImpl implements WriteFileManager {
         } else {
             slashCount = (percent * (amountCharacterByFile * 0.5)) / 100;
         }
-
         double slashCountRounded = Math.round(slashCount);
         for (int i = 0; i < slashCountRounded; i++) {
             stringBuilder.append("#");
@@ -56,12 +52,10 @@ public class WriteFileManagerImpl implements WriteFileManager {
         return stringBuilder.toString();
     }
 
-    @Override
     public void writeTextLine(String textLine) throws IOException {
         bufferedWriter.write(textLine + System.lineSeparator());
     }
 
-    @Override
     public void closeWrite() throws IOException {
         bufferedWriter.close();
     }
