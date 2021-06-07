@@ -1,17 +1,19 @@
 package com.koen;
 
-import java.io.File;
-import java.io.IOException;
-
 public class MainApp {
-    public static void main(String[] args) throws IOException {
-        String readFile = args[0];
-        String writeFile = args[1];
-        ValidationInputData validationInputData = new ValidationInputData();
-        validationInputData.checkExistsFile(readFile);
-        validationInputData.checkExistsFile(writeFile);
-        ManagerFile managerFile = new ManagerFile(readFile, writeFile);
-        managerFile.startCollectFrequency();
-        System.out.println("Program completed successfully");
+    private static final ValidationInputData validationInputData = new ValidationInputData();
+
+    public static void main(String[] args) {
+        try {
+            String inputFileArg = args[0];
+            String outPutFileArg = args[1];
+            validationInputData.checkExistsFile(inputFileArg);
+            validationInputData.checkExistsFile(outPutFileArg);
+            ManagerFile managerFile = new ManagerFile(inputFileArg, outPutFileArg);
+            managerFile.startCollectFrequency();
+            System.out.println("Program completed successfully");
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            validationInputData.arrayIndexOutOfBoundsException();
+        }
     }
 }

@@ -16,10 +16,12 @@ public class WriterFile {
         try {
             StringBuilder textLine = new StringBuilder();
             for (Map.Entry<Character, Integer> map : mapWithFrequency.entrySet()) {
-                if (map.getKey() != '\n') {
-                    textLine.append(getTextWithFrequencyToWrite(map.getKey(), map.getValue()));
-                } else {
+                if (map.getKey() == '\n') {
                     textLine.append(getTextWithFrequencyToWrite('_', map.getValue()));
+                } else if (map.getKey() == ' ') {
+                    textLine.append(getTextWithFrequencyToWrite('¿', map.getValue()));
+                } else {
+                    textLine.append(getTextWithFrequencyToWrite(map.getKey(), map.getValue()));
                 }
                 writeTextLine(textLine.toString());
                 textLine.setLength(0);

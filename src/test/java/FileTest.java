@@ -1,20 +1,17 @@
 import com.koen.FrequencyChar;
-import com.koen.ManagerFile;
 import com.koen.FrequencyCharImpl;
-import org.junit.Rule;
+import com.koen.ManagerFile;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class FileTest {
-    @Rule
-    public TemporaryFolder fileTemp = new TemporaryFolder();
 
     @Test
     public void correctCalculate() {
@@ -24,29 +21,24 @@ public class FileTest {
 
     @Test
     public void correctFileWork() throws IOException {
-//        File fileInput = fileTemp.newFile("input.txt");
-//        File fileResults = fileTemp.newFile("result.txt");
-//        writeTestTextToFileInput(fileInput);
-//        ManagerFile managerFile = new ManagerFile(fileInput, fileResults);
-//        managerFile.startCollectFrequency();
-//        assertEquals("5 (100,0%): ##\n", getTextFromResults(fileResults));
+        String inputFile = "src/main/resources/inputFile";
+        String outPutFile = "src/main/resources/outPutFile";
+        String resultFile = "src/main/resources/resultFile";
+        ManagerFile managerFile = new ManagerFile(inputFile, outPutFile);
+        managerFile.startCollectFrequency();
+        assertEquals(getMapFromFile(resultFile), getMapFromFile(outPutFile));
     }
 
-    private void writeTestTextToFileInput(File fileInput) throws IOException {
-        FileWriter fileInputWriter = new FileWriter(fileInput);
-        fileInputWriter.write('5');
-        fileInputWriter.flush();
-        fileInputWriter.close();
-    }
-
-    private String getTextFromResults(File fileResults) throws IOException {
-        FileReader resultsFileReader = new FileReader(fileResults);
-        int c;
-        StringBuilder stringBuilder = new StringBuilder();
-        while ((c = resultsFileReader.read()) != -1) {
-            stringBuilder.append((char) c);
+    private List<String> getMapFromFile(String file) {
+        List<String> list = new LinkedList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                list.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        resultsFileReader.close();
-        return stringBuilder.toString();
+        return list;
     }
 }
