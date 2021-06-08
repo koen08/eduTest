@@ -8,7 +8,7 @@ public class MainApp {
             ValidationInputData validationInputData = new ValidationInputData(args);
             ManagerFile managerFile = new ManagerFile(
                     validationInputData.getInputFileNameArg(),
-                    validationInputData.getInputFileNameArg());
+                    validationInputData.getOutputFilNameArg());
             managerFile.startCollectFrequency();
             System.out.println("Program completed successfully");
         } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
