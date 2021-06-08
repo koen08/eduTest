@@ -19,15 +19,15 @@ public class ManagerFile {
         try {
             IFrequencyChar frequencyChar;
             Map<Character, Integer> mapWithFrequency;
-            try(FileReader readerFile = new FileReader(new FileInputStream(fileRead))){
+            try (FileReader readerFile = new FileReader(new FileInputStream(fileRead))) {
                 frequencyChar = new FrequencyChar();
                 mapWithFrequency =
                         frequencyChar.collectStatisticFile(readerFile);
             }
-            try(FileWriter writerFile = new FileWriter(
+            try (FileWriter writerFile = new FileWriter(
                     new FileOutputStream(fileWrite),
                     frequencyChar.getAmountCharacter()
-            )){
+            )) {
                 writerFile.writeMapToFile(mapWithFrequency);
             }
         } catch (FileNotFoundException e) {

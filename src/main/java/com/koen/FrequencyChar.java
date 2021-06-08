@@ -9,7 +9,7 @@ public class FrequencyChar implements IFrequencyChar {
 
     @Override
     public double getPercent(int valueFrequency, int amountCharacterByFile) {
-        return ((double) valueFrequency / amountCharacterByFile)*100;
+        return ((double) valueFrequency / amountCharacterByFile) * 100;
     }
 
     @Override

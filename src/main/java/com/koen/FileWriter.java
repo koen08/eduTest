@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Map;
 
-public class FileWriter implements AutoCloseable{
+public class FileWriter implements AutoCloseable {
     private final BufferedWriter bufferedWriter;
     private final int amountCharacterByFile;
 
