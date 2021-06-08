@@ -2,10 +2,10 @@ package com.koen;
 
 import java.io.*;
 
-public class ReaderFile {
+public class FileReader {
     private Reader reader;
 
-    public ReaderFile(InputStream inputStream) {
+    public FileReader(InputStream inputStream) {
         try {
             this.reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -17,6 +17,7 @@ public class ReaderFile {
         try {
             return reader.read();
         } catch (IOException e) {
+            System.out.println("File can not be read");
             e.printStackTrace();
         }
         return -1;
@@ -26,6 +27,7 @@ public class ReaderFile {
         try {
             reader.close();
         } catch (IOException e) {
+            System.out.println("Stream can not be close");
             e.printStackTrace();
         }
     }

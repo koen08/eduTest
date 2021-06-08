@@ -15,16 +15,17 @@ public class ManagerFile {
 
     public void startCollectFrequency() {
         try {
-            ReaderFile readerFile = new ReaderFile(new FileInputStream(fileRead));
-            FrequencyChar frequencyChar = new FrequencyCharImpl();
+            FileReader readerFile = new FileReader(new FileInputStream(fileRead));
+            IFrequencyChar frequencyChar = new FrequencyChar();
             Map<Character, Integer> mapWithFrequency =
                     frequencyChar.collectStatisticFile(readerFile);
-            WriterFile writerFile = new WriterFile(
+            FileWriter writerFile = new FileWriter(
                     new FileOutputStream(fileWrite),
                     frequencyChar.getAmountCharacter()
             );
             writerFile.writeMapToFile(mapWithFrequency);
         } catch (FileNotFoundException e) {
+            System.out.println("File did not found");
             e.printStackTrace();
         }
     }

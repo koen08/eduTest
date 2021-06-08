@@ -1,19 +1,16 @@
 package com.koen;
 
 public class MainApp {
-    private static final ValidationInputData validationInputData = new ValidationInputData();
-
     public static void main(String[] args) {
         try {
-            String inputFileArg = args[0];
-            String outPutFileArg = args[1];
-            validationInputData.checkExistsFile(inputFileArg);
-            validationInputData.checkExistsFile(outPutFileArg);
-            ManagerFile managerFile = new ManagerFile(inputFileArg, outPutFileArg);
+            String inputFileNameArg = args[0];
+            String outPutFileNameArg = args[1];
+            new ValidationInputData(inputFileNameArg, outPutFileNameArg);
+            ManagerFile managerFile = new ManagerFile(inputFileNameArg, outPutFileNameArg);
             managerFile.startCollectFrequency();
             System.out.println("Program completed successfully");
         } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
-            validationInputData.arrayIndexOutOfBoundsException();
+            System.out.println("No arguments in the program...");
         }
     }
 }

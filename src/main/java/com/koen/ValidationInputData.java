@@ -5,6 +5,11 @@ import java.io.IOException;
 
 public class ValidationInputData {
 
+    public ValidationInputData(String inputFileNameArg, String outputFilNameArg) {
+        checkExistsFile(inputFileNameArg);
+        checkExistsFile(outputFilNameArg);
+    }
+
     public void checkExistsFile(String fileName) {
         File myFile = new File(fileName);
         if (!myFile.exists()) {
@@ -18,9 +23,5 @@ public class ValidationInputData {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void arrayIndexOutOfBoundsException() {
-        System.out.println("No arguments in the program...");
     }
 }
