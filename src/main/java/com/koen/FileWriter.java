@@ -18,13 +18,7 @@ public class FileWriter implements AutoCloseable {
     public void writeMapToFile(Map<Character, Integer> mapWithFrequency) {
         StringBuilder textLine = new StringBuilder();
         for (Map.Entry<Character, Integer> map : mapWithFrequency.entrySet()) {
-            if (map.getKey() == '\n') {
-                textLine.append(getTextWithFrequencyToWrite('_', map.getValue()));
-            } else if (map.getKey() == ' ') {
-                textLine.append(getTextWithFrequencyToWrite('¿', map.getValue()));
-            } else {
-                textLine.append(getTextWithFrequencyToWrite(map.getKey(), map.getValue()));
-            }
+            textLine.append(getTextWithFrequencyToWrite(map.getKey(), map.getValue()));
             writeTextLine(textLine.toString());
             textLine.setLength(0);
         }

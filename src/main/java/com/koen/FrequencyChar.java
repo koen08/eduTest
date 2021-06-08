@@ -17,10 +17,14 @@ public class FrequencyChar implements IFrequencyChar {
         Map<Character, Integer> mapWithFrequency = new LinkedHashMap<>();
         int character;
         while ((character = readerFile.getCharacter()) != -1) {
-            amountCharacterByFile++;
-            Integer countFrequencyObject = mapWithFrequency.getOrDefault((char) character, 0);
-            countFrequencyObject++;
-            mapWithFrequency.put((char) character, countFrequencyObject);
+            if (character >= 48 && character <= 57 ||
+                    character >= 65 && character <= 90 ||
+                    character >= 97 && character <= 122) {
+                amountCharacterByFile++;
+                Integer countFrequencyObject = mapWithFrequency.getOrDefault((char) character, 0);
+                countFrequencyObject++;
+                mapWithFrequency.put((char) character, countFrequencyObject);
+            }
         }
         readerFile.close();
         Map<Character, Integer> mapWithFrequencySorted = new LinkedHashMap<>();
