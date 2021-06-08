@@ -12,6 +12,12 @@ public class MainApp {
         } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
             LoggerError.log("No arguments in the program...",
                     arrayIndexOutOfBoundsException);
+            System.exit(64);
+        }
+        catch (Exception exception){
+            LoggerError.log(exception.getMessage(),
+                    exception);
+            System.exit(64);
         }
     }
 }

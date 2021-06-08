@@ -9,7 +9,7 @@ public class FileReader implements AutoCloseable {
         try {
             this.reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LoggerError.log("Unsupported encoding ", e);
         }
     }
 
