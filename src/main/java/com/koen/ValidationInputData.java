@@ -27,8 +27,6 @@ public class ValidationInputData {
                 LoggerError.log("Error create file", e);
                 throw new FileException("Probably file name has invalid path");
             }
-        } else {
-            throw new FileException("File exists");
         }
     }
 
