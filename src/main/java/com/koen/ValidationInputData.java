@@ -19,9 +19,9 @@ public class ValidationInputData {
         if (!myFile.exists()) {
             try {
                 if (!myFile.createNewFile()) {
-                    LoggerError.log("File created", null);
-                } else {
                     throw new FileException("Error create file");
+                } else {
+                    LoggerError.log("File created", null);
                 }
             } catch (IOException e) {
                 LoggerError.log("Error create file", e);
