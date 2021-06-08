@@ -1,6 +1,8 @@
 package com.koen;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Map;
 
 public class ManagerFile {
@@ -15,18 +17,21 @@ public class ManagerFile {
 
     public void startCollectFrequency() {
         try {
-            FileReader readerFile = new FileReader(new FileInputStream(fileRead));
-            IFrequencyChar frequencyChar = new FrequencyChar();
-            Map<Character, Integer> mapWithFrequency =
-                    frequencyChar.collectStatisticFile(readerFile);
-            FileWriter writerFile = new FileWriter(
+            IFrequencyChar frequencyChar;
+            Map<Character, Integer> mapWithFrequency;
+            try(FileReader readerFile = new FileReader(new FileInputStream(fileRead))){
+                frequencyChar = new FrequencyChar();
+                mapWithFrequency =
+                        frequencyChar.collectStatisticFile(readerFile);
+            }
+            try(FileWriter writerFile = new FileWriter(
                     new FileOutputStream(fileWrite),
                     frequencyChar.getAmountCharacter()
-            );
-            writerFile.writeMapToFile(mapWithFrequency);
+            )){
+                writerFile.writeMapToFile(mapWithFrequency);
+            }
         } catch (FileNotFoundException e) {
-            System.out.println("File did not found");
-            e.printStackTrace();
+            LoggerError.log("File did not found", e);
         }
     }
 }

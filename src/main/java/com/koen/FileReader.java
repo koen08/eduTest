@@ -2,7 +2,7 @@ package com.koen;
 
 import java.io.*;
 
-public class FileReader {
+public class FileReader implements AutoCloseable {
     private Reader reader;
 
     public FileReader(InputStream inputStream) {
@@ -17,18 +17,17 @@ public class FileReader {
         try {
             return reader.read();
         } catch (IOException e) {
-            System.out.println("File can not be read");
-            e.printStackTrace();
+            LoggerError.log("File can not be read", e);
         }
         return -1;
     }
 
+    @Override
     public void close() {
         try {
             reader.close();
         } catch (IOException e) {
-            System.out.println("Stream can not be close");
-            e.printStackTrace();
+            LoggerError.log("Stream can not be close", e);
         }
     }
 }

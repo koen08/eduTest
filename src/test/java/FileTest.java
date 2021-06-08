@@ -1,13 +1,11 @@
 import com.koen.FrequencyChar;
 import com.koen.IFrequencyChar;
-import com.koen.ManagerFile;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,10 +23,10 @@ public class FileTest {
         IFrequencyChar frequencyChar = new FrequencyChar();
         Map<Character, Integer> mapWithFrequency =
                 frequencyChar.collectStatisticFile(readerFile);
-       assertEquals(getFilledMap(), mapWithFrequency);
+        assertEquals(getFilledMap(), mapWithFrequency);
     }
 
-    private Map<Character, Integer> getFilledMap(){
+    private Map<Character, Integer> getFilledMap() {
         Map<Character, Integer> expectedMap = new LinkedHashMap<>();
         expectedMap.put('1', 3);
         expectedMap.put('2', 2);

@@ -1,9 +1,12 @@
 package com.koen;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Map;
 
-public class FileWriter {
+public class FileWriter implements AutoCloseable{
     private final BufferedWriter bufferedWriter;
     private final int amountCharacterByFile;
 
@@ -25,7 +28,7 @@ public class FileWriter {
             writeTextLine(textLine.toString());
             textLine.setLength(0);
         }
-        closeWrite();
+        close();
     }
 
     public StringBuilder getTextWithFrequencyToWrite(Character key, Integer value) {
@@ -54,17 +57,16 @@ public class FileWriter {
         try {
             bufferedWriter.write(textLine + System.lineSeparator());
         } catch (IOException e) {
-            System.out.println("File can not be write");
-            e.printStackTrace();
+            LoggerError.log("File can not be write", e);
         }
     }
 
-    public void closeWrite() {
+    @Override
+    public void close() {
         try {
             bufferedWriter.close();
-        } catch (IOException e) {
-            System.out.println("Stream can not be close");
-            e.printStackTrace();
+        } catch (Exception e) {
+            LoggerError.log("Stream can not be close", e);
         }
     }
 }
