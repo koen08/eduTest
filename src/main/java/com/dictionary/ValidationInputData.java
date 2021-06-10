@@ -1,4 +1,4 @@
-package com.koen;
+package com.dictionary;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,25 +1,22 @@
-package com.koen;
+package com.dictionary;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class FileReader implements AutoCloseable {
-    private Reader reader;
+    private BufferedReader reader;
 
     public FileReader(InputStream inputStream) {
-        try {
-            this.reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            LoggerError.log("Unsupported encoding ", e);
-        }
+        this.reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
     }
 
-    public int getCharacter() {
+    public String getLine() {
         try {
-            return reader.read();
+            return reader.readLine();
         } catch (IOException e) {
             LoggerError.log("File can not be read", e);
         }
-        return -1;
+        return null;
     }
 
     @Override
