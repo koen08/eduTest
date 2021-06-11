@@ -1,8 +1,5 @@
 package com.dictionary;
 
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-
 public class MainClass {
     private static byte EX_BASE = 64;
 
@@ -12,9 +9,11 @@ public class MainClass {
             ValidationInputData validationInputData = new ValidationInputData(args);
             ManagerFile managerFile = new ManagerFile(validationInputData.getInputFileNameArg(),
                     validationInputData.getOutputFilNameArg());
-            new ManagerThead(managerFile.getStackUrl(), (byte) 4).startThread();
+            ManagerThead managerThead = new ManagerThead(managerFile, (byte) 1);
+            managerThead.startThread();
             System.out.println("Program completed successfully");
             System.out.println((double) (System.currentTimeMillis() - m) / 1000);
+            managerThead.finishThread();
         } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
             LoggerError.log("No arguments in the program...",
                     arrayIndexOutOfBoundsException);

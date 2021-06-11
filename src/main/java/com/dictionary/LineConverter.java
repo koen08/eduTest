@@ -10,7 +10,7 @@ public class LineConverter {
         while ((line = fileReader.getLine()) != null) {
             listUrl.add(line);
         }
-        return listUrl;
+        return listUrl; //перенести
     }
 
     public void putLineToQueue(String[] words, BlockingQueue<String> queueWord) {
@@ -26,5 +26,9 @@ public class LineConverter {
 
     public String[] convertLineTextToWords(String line) {
         return line.split(" ");
+    }
+
+    public void putAllTheWordsInQueue(){
+
     }
 }

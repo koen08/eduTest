@@ -2,8 +2,13 @@ package com.dictionary;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -31,7 +36,28 @@ public class ManagerFile {
         return queueUrl;
     }
 
-    public String getFileWrite() {
-        return fileWrite;
+    public static void writeResultsToFile(Set<String> setWords) {
+        try (FileWriter fileWriter = new FileWriter(new FileOutputStream(ManagerFile.fileWrite))) {
+            for (String setWord : setWords) {
+                fileWriter.writeTextLine(setWord);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getLineFromUrlFile(String url){
+        List<String> stringList = new LinkedList<>();
+        try (FileReader readerFile = new FileReader(new URL(url).openStream())) {
+            String line;
+            while ((line = readerFile.getLine()) != null) {
+                stringList.add(line);
+            }
+        } catch (FileNotFoundException | MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringList;
     }
 }

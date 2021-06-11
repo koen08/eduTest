@@ -1,35 +1,48 @@
 package com.dictionary;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class ManagerThead {
-    private BlockingQueue<String> blockingQueue;
-    private BlockingQueue<String> stackUrl;
-    private byte countThread;
+    private BlockingQueue<String> wordQueue;
+    private ExecutorService threadConsumer;
+    private ExecutorService threadPool;
+    private final ManagerFile managerFile;
+    private final byte countThread;
 
-    public ManagerThead(BlockingQueue<String> stackUrl,
+    public ManagerThead(ManagerFile managerFile,
                         byte countThread) {
-        this.blockingQueue = new ArrayBlockingQueue(1024);
-        this.stackUrl = stackUrl;
+        this.managerFile = managerFile;
         this.countThread = countThread;
     }
 
     public void startThread() {
-        ExecutorService threadPool =
-                Executors.newFixedThreadPool(countThread);
+        ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue);
+        CountDownLatch countDownLatch = new CountDownLatch(countThread);
+        BlockingQueue<String> blockingQueue = managerFile.getStackUrl();
+        wordQueue = new ArrayBlockingQueue(1024);
+        threadPool = Executors.newFixedThreadPool(countThread);
+        threadConsumer = Executors.newSingleThreadExecutor();
+        threadConsumer.execute(new ConsumerDictionary(wordQueue));
         for (int i = 0; i < countThread; i++) {
-            threadPool.execute(new ProducerDictionary(blockingQueue, stackUrl));
+            threadPool.execute(new ProducerDictionary(
+                    wordQueue,
+                    blockingQueue,
+                    countDownLatch,
+                    managerFile
+            ));
         }
-        ExecutorService threadConsumer =
-                Executors.newSingleThreadExecutor();
-        threadConsumer.execute(new ConsumerDictionary(blockingQueue));
+        try {
+            countDownLatch.await();
+            consumerDictionary.setStop(true);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void finishThread() {
         threadPool.shutdown();
-        if (threadPool.isTerminated()){
-            ConsumerDictionary.stop = true;
-            threadConsumer.shutdown();
-        }
+        threadConsumer.shutdown();
+        System.out.println("Threads were closed");
     }
 }

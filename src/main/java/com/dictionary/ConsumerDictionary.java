@@ -1,8 +1,5 @@
 package com.dictionary;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
@@ -10,8 +7,7 @@ import java.util.concurrent.BlockingQueue;
 public class ConsumerDictionary implements Runnable {
     private BlockingQueue<String> blockingQueue;
     private Set<String> setWords;
-    private Iterator<String> it;
-    public static boolean stop = false;
+    private boolean stop = false;
 
     public ConsumerDictionary(BlockingQueue<String> blockingQueue) {
         this.blockingQueue = blockingQueue;
@@ -21,27 +17,18 @@ public class ConsumerDictionary implements Runnable {
     @Override
     public void run() {
         try {
-            try (FileWriter fileWriter = new FileWriter(new FileOutputStream(ManagerFile.fileWrite))) {
-                while (!stop && !blockingQueue.isEmpty()) {
-                    String word = blockingQueue.take();
-                    word = word.toLowerCase();
-                    if (!word.matches("(.*[0-9]+.*)")) {
-                        word = word.replaceAll("[^а-яё]", "");
-                        if (word.matches("([а-яё]{3,})")) {
-                            setWords.add(word);
-                        }
-                    }
-                }
-                it = setWords.iterator();
-                while (it.hasNext()) {
-                    fileWriter.writeTextLine(it.next());
-                }
-            } catch (InterruptedException interruptedException) {
-                LoggerError.log("Thread was interrupt", interruptedException);
-                Thread.currentThread().interrupt();
+            while (!stop || !blockingQueue.isEmpty()) {
+                String word = blockingQueue.take();
+                setWords.add(word);
             }
-        } catch (FileNotFoundException e) {
-            LoggerError.log("File not found", e);
+            System.out.println("Я сюда пришел");
+            ManagerFile.writeResultsToFile(setWords);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
         }
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
     }
 }
