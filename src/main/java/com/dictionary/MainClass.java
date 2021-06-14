@@ -9,7 +9,7 @@ public class MainClass {
             ValidationInputData validationInputData = new ValidationInputData(args);
             ManagerFile managerFile = new ManagerFile(validationInputData.getInputFileNameArg(),
                     validationInputData.getOutputFilNameArg());
-            ManagerThead managerThead = new ManagerThead(managerFile, (byte) 1);
+            ManagerThead managerThead = new ManagerThead(managerFile, validationInputData.getCountThread());
             managerThead.startThread();
             System.out.println("Program completed successfully");
             System.out.println((double) (System.currentTimeMillis() - m) / 1000);

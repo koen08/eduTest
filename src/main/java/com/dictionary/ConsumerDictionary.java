@@ -1,5 +1,6 @@
 package com.dictionary;
 
+import java.net.ServerSocket;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
@@ -7,7 +8,7 @@ import java.util.concurrent.BlockingQueue;
 public class ConsumerDictionary implements Runnable {
     private BlockingQueue<String> blockingQueue;
     private Set<String> setWords;
-    private boolean stop = false;
+    public volatile boolean stop = true;
 
     public ConsumerDictionary(BlockingQueue<String> blockingQueue) {
         this.blockingQueue = blockingQueue;
@@ -17,9 +18,12 @@ public class ConsumerDictionary implements Runnable {
     @Override
     public void run() {
         try {
-            while (!stop || !blockingQueue.isEmpty()) {
-                String word = blockingQueue.take();
-                setWords.add(word);
+            while (true) {
+                if (stop || !blockingQueue.isEmpty()) {
+                    String word = blockingQueue.take();
+                    setWords.add(word);
+                    System.out.println(stop);
+                } else break;
             }
             System.out.println("Я сюда пришел");
             ManagerFile.writeResultsToFile(setWords);

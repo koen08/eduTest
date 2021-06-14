@@ -36,32 +36,36 @@ public class ProducerDictionary implements Runnable {
     }
 
     private void putAllTheWordsLineInQueue(String line) {
-        char characterLine;
-        int pointerCharacterLine = 0;
-        String word = "";
+        char symbolWord;
+        StringBuilder word = new StringBuilder();
         for (int i = 0; i < line.length(); i++) {
-            characterLine = line.charAt(i);
-            if (!Character.isLetterOrDigit(characterLine) &&
-                    !Character.isWhitespace(characterLine)) {
-                line = line.replace(characterLine, ' ');
-                characterLine = line.charAt(i);
+            symbolWord = line.charAt(i);
+            if (Character.isLetterOrDigit(symbolWord)) {
+                word.append(symbolWord);
             }
-            if (Character.isWhitespace(characterLine)) {
-                word = line.substring(pointerCharacterLine, i);
-                pointerCharacterLine = i + 1;
-            }
-            if (line.length() - 1 == i && word.equals("")) {
-                word = line.substring(pointerCharacterLine, i + 1);
-            }
-            word = word.toLowerCase();
-            if (word.length() >= 3 && checkWordIntoCorrect(word)) {
-                wordQueue.add(word);
-                word = "";
+            if (Character.isWhitespace(symbolWord) ||
+                    isPunctuation(symbolWord) ||
+                    line.length() - 1 == i) {
+                if (checkWordIntoCorrect(word)){
+                    try {
+                        wordQueue.put(word.toString());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                word.setLength(0);
             }
         }
     }
 
-    private boolean checkWordIntoCorrect(String word) {
+    private boolean isPunctuation(char symbolWord) {
+        return symbolWord >= 33 && symbolWord <= 47;
+    }
+
+    private boolean checkWordIntoCorrect(StringBuilder word) {
+        if (word.length() < 3) {
+            return false;
+        }
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) < 224) {
                 return false;

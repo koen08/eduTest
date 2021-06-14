@@ -16,13 +16,13 @@ public class ManagerThead {
     }
 
     public void startThread() {
-        ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue);
         CountDownLatch countDownLatch = new CountDownLatch(countThread);
         BlockingQueue<String> blockingQueue = managerFile.getStackUrl();
         wordQueue = new ArrayBlockingQueue(1024);
+        ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue);
         threadPool = Executors.newFixedThreadPool(countThread);
         threadConsumer = Executors.newSingleThreadExecutor();
-        threadConsumer.execute(new ConsumerDictionary(wordQueue));
+        threadConsumer.execute(consumerDictionary);
         for (int i = 0; i < countThread; i++) {
             threadPool.execute(new ProducerDictionary(
                     wordQueue,
@@ -33,7 +33,7 @@ public class ManagerThead {
         }
         try {
             countDownLatch.await();
-            consumerDictionary.setStop(true);
+            consumerDictionary.setStop(false);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
             Thread.currentThread().interrupt();
