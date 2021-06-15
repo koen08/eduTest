@@ -1,4 +1,4 @@
-package com.dictionary;
+package com.siberteam.koen.dictionary;
 
 import org.apache.commons.cli.*;
 
@@ -6,6 +6,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class ValidationInputData {
+    private static final String INPUT = "files";
+    private static final String OUTPUT = "out";
+    private static final String THREAD = "threads";
+    private static final String ARG_NAME = "property=value";
     private String inputFileNameArg;
     private String outputFilNameArg;
     private byte countThread;
@@ -13,17 +17,20 @@ public class ValidationInputData {
 
     public ValidationInputData(String[] args) throws FileException {
         generateOption(args);
-        if (cmd.hasOption("fileInput")) {
-            inputFileNameArg = cmd.getOptionValue("fileInput");
+        if (cmd.hasOption(INPUT)) {
+            inputFileNameArg = cmd.getOptionValue(INPUT);
             checkExistsFile(inputFileNameArg);
         }
-        if (cmd.hasOption("fileResults")) {
-            outputFilNameArg = cmd.getOptionValue("fileResults");
+        if (cmd.hasOption(OUTPUT)) {
+            outputFilNameArg = cmd.getOptionValue(OUTPUT);
             checkExistsFile(outputFilNameArg);
         }
-        if (cmd.hasOption("count")) {
-            countThread = Byte.parseByte(cmd.getOptionValue("count"));
-            checkArgCountThread();
+        if (cmd.hasOption(THREAD)) {
+            countThread = Byte.parseByte(cmd.getOptionValue(THREAD));
+            if (getCountThread() < 1) {
+                LoggerError.log("The number of threads cannot be less than 1",
+                        new FileException("Thread=" + getCountThread()));
+            }
         }
     }
 
@@ -31,28 +38,25 @@ public class ValidationInputData {
         try {
             Options options = new Options();
             Option propertyOption = Option.builder()
-                    .longOpt("fileInput")
-                    .argName("property=value")
+                    .longOpt(INPUT)
+                    .argName(ARG_NAME)
                     .hasArgs()
                     .valueSeparator()
                     .numberOfArgs(1)
-                    .desc("use value for given properties")
                     .build();
             Option propertyOptionResults = Option.builder()
-                    .longOpt("fileResults")
-                    .argName("property=value")
+                    .longOpt(OUTPUT)
+                    .argName(ARG_NAME)
                     .hasArgs()
                     .valueSeparator()
                     .numberOfArgs(1)
-                    .desc("use value for given properties")
                     .build();
             Option propertyOptionCountThread = Option.builder()
-                    .longOpt("count")
-                    .argName("property=value")
+                    .longOpt(THREAD)
+                    .argName(ARG_NAME)
                     .hasArgs()
                     .valueSeparator()
                     .numberOfArgs(1)
-                    .desc("use value for given properties")
                     .build();
             options.addOption(propertyOption);
             options.addOption(propertyOptionResults);
@@ -77,13 +81,6 @@ public class ValidationInputData {
                 LoggerError.log("Error create file", e);
                 throw new FileException("Probably file name has invalid path");
             }
-        }
-    }
-
-    public void checkArgCountThread() {
-        if (getCountThread() < 1) {
-            LoggerError.log("The number of threads cannot be less than 1",
-                    new FileException("Thread=" + getCountThread()));
         }
     }
 

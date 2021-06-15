@@ -1,4 +1,4 @@
-package com.dictionary;
+package com.siberteam.koen.dictionary;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -7,14 +7,14 @@ import java.util.concurrent.CountDownLatch;
 public class ProducerDictionary implements Runnable {
     private final BlockingQueue<String> wordQueue;
     private final BlockingQueue<String> urlQueue;
-    private CountDownLatch countDownLatch;
-    private final ManagerFile managerFile;
+    private final CountDownLatch countDownLatch;
+    private final FileManager fileManager;
 
     public ProducerDictionary(BlockingQueue<String> wordQueue,
                               BlockingQueue<String> urlQueue,
                               CountDownLatch countDownLatch,
-                              ManagerFile managerFile) {
-        this.managerFile = managerFile;
+                              FileManager fileManager) {
+        this.fileManager = fileManager;
         this.countDownLatch = countDownLatch;
         this.wordQueue = wordQueue;
         this.urlQueue = urlQueue;
@@ -24,12 +24,13 @@ public class ProducerDictionary implements Runnable {
     public void run() {
         while (!urlQueue.isEmpty()) {
             try {
-                List<String> listLine = managerFile.getLineFromUrlFile(urlQueue.take());
+                List<String> listLine = fileManager.getLineFromUrlFile(urlQueue.take());
                 for (String line : listLine) {
                     putAllTheWordsLineInQueue(line);
                 }
             } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
+                LoggerError.log("Thread was interrupted", interruptedException);
+                Thread.currentThread().interrupt();
             }
         }
         countDownLatch.countDown();
@@ -40,17 +41,18 @@ public class ProducerDictionary implements Runnable {
         StringBuilder word = new StringBuilder();
         for (int i = 0; i < line.length(); i++) {
             symbolWord = line.charAt(i);
-            if (Character.isLetterOrDigit(symbolWord)) {
+            if (Character.isLetterOrDigit(symbolWord) && symbolWord >= 224) {
                 word.append(symbolWord);
             }
             if (Character.isWhitespace(symbolWord) ||
                     isPunctuation(symbolWord) ||
                     line.length() - 1 == i) {
-                if (checkWordIntoCorrect(word)){
+                if (checkWordIntoCorrect(word)) {
                     try {
-                        wordQueue.put(word.toString());
+                        wordQueue.put(word.toString().toLowerCase());
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        LoggerError.log("Thread was interrupted", e);
+                        Thread.currentThread().interrupt();
                     }
                 }
                 word.setLength(0);

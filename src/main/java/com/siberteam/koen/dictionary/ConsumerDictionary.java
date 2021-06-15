@@ -1,6 +1,5 @@
-package com.dictionary;
+package com.siberteam.koen.dictionary;
 
-import java.net.ServerSocket;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
@@ -8,10 +7,12 @@ import java.util.concurrent.BlockingQueue;
 public class ConsumerDictionary implements Runnable {
     private BlockingQueue<String> blockingQueue;
     private Set<String> setWords;
-    public volatile boolean stop = true;
+    public volatile boolean stop = false;
+    private FileManager fileManager;
 
-    public ConsumerDictionary(BlockingQueue<String> blockingQueue) {
+    public ConsumerDictionary(BlockingQueue<String> blockingQueue, FileManager fileManager) {
         this.blockingQueue = blockingQueue;
+        this.fileManager = fileManager;
         setWords = new TreeSet<>();
     }
 
@@ -19,16 +20,15 @@ public class ConsumerDictionary implements Runnable {
     public void run() {
         try {
             while (true) {
-                if (stop || !blockingQueue.isEmpty()) {
+                if (!blockingQueue.isEmpty()) {
                     String word = blockingQueue.take();
                     setWords.add(word);
-                    System.out.println(stop);
-                } else break;
+                } else if (stop) break;
             }
-            System.out.println("Я сюда пришел");
-            ManagerFile.writeResultsToFile(setWords);
+            fileManager.writeResultsToFile(setWords);
         } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
+            LoggerError.log("Thread was interrupted", interruptedException);
+            Thread.currentThread().interrupt();
         }
     }
 

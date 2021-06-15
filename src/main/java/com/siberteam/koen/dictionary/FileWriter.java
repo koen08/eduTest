@@ -1,12 +1,9 @@
-package com.dictionary;
+package com.siberteam.koen.dictionary;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Map;
 
 public class FileWriter implements AutoCloseable {
     private final BufferedWriter bufferedWriter;
@@ -17,7 +14,7 @@ public class FileWriter implements AutoCloseable {
 
     public void writeTextLine(String textLine) {
         try {
-                bufferedWriter.write(textLine + System.lineSeparator());
+            bufferedWriter.write(textLine + System.lineSeparator());
         } catch (IOException e) {
             LoggerError.log("File can not be write", e);
         }

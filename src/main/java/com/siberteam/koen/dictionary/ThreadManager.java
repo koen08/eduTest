@@ -1,41 +1,41 @@
-package com.dictionary;
+package com.siberteam.koen.dictionary;
 
 import java.util.concurrent.*;
 
-public class ManagerThead {
+public class ThreadManager {
     private BlockingQueue<String> wordQueue;
     private ExecutorService threadConsumer;
     private ExecutorService threadPool;
-    private final ManagerFile managerFile;
+    private final FileManager fileManager;
     private final byte countThread;
 
-    public ManagerThead(ManagerFile managerFile,
-                        byte countThread) {
-        this.managerFile = managerFile;
+    public ThreadManager(FileManager fileManager,
+                         byte countThread) {
+        this.fileManager = fileManager;
         this.countThread = countThread;
     }
 
     public void startThread() {
         CountDownLatch countDownLatch = new CountDownLatch(countThread);
-        BlockingQueue<String> blockingQueue = managerFile.getStackUrl();
+        BlockingQueue<String> queueUrl = fileManager.getQueueUrl();
         wordQueue = new ArrayBlockingQueue(1024);
-        ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue);
+        ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue, fileManager);
         threadPool = Executors.newFixedThreadPool(countThread);
         threadConsumer = Executors.newSingleThreadExecutor();
         threadConsumer.execute(consumerDictionary);
         for (int i = 0; i < countThread; i++) {
             threadPool.execute(new ProducerDictionary(
                     wordQueue,
-                    blockingQueue,
+                    queueUrl,
                     countDownLatch,
-                    managerFile
+                    fileManager
             ));
         }
         try {
             countDownLatch.await();
-            consumerDictionary.setStop(false);
+            consumerDictionary.setStop(true);
         } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
+            LoggerError.log("Thread was interrupted", interruptedException);
             Thread.currentThread().interrupt();
         }
     }

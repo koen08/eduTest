@@ -1,19 +1,17 @@
-package com.dictionary;
+package com.siberteam.koen.dictionary;
 
 public class MainClass {
-    private static byte EX_BASE = 64;
+    private static final byte EX_BASE = 64;
 
     public static void main(String[] args) {
         try {
-            long m = System.currentTimeMillis();
             ValidationInputData validationInputData = new ValidationInputData(args);
-            ManagerFile managerFile = new ManagerFile(validationInputData.getInputFileNameArg(),
+            FileManager fileManager = new FileManager(validationInputData.getInputFileNameArg(),
                     validationInputData.getOutputFilNameArg());
-            ManagerThead managerThead = new ManagerThead(managerFile, validationInputData.getCountThread());
-            managerThead.startThread();
+            ThreadManager threadManager = new ThreadManager(fileManager, validationInputData.getCountThread());
+            threadManager.startThread();
             System.out.println("Program completed successfully");
-            System.out.println((double) (System.currentTimeMillis() - m) / 1000);
-            managerThead.finishThread();
+            threadManager.finishThread();
         } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
             LoggerError.log("No arguments in the program...",
                     arrayIndexOutOfBoundsException);
