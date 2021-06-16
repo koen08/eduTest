@@ -3,7 +3,6 @@ package com.siberteam.koen.dictionary;
 import java.util.concurrent.*;
 
 public class ThreadManager {
-    private BlockingQueue<String> wordQueue;
     private ExecutorService threadConsumer;
     private ExecutorService threadPool;
     private final FileManager fileManager;
@@ -18,7 +17,7 @@ public class ThreadManager {
     public void startThread() {
         CountDownLatch countDownLatch = new CountDownLatch(countThread);
         BlockingQueue<String> queueUrl = fileManager.getQueueUrl();
-        wordQueue = new ArrayBlockingQueue(1024);
+        BlockingQueue<String> wordQueue = new ArrayBlockingQueue(1024);
         ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue, fileManager);
         threadPool = Executors.newFixedThreadPool(countThread);
         threadConsumer = Executors.newSingleThreadExecutor();
@@ -33,7 +32,7 @@ public class ThreadManager {
         }
         try {
             countDownLatch.await();
-            consumerDictionary.setStop(true);
+            wordQueue.put("STOP");
         } catch (InterruptedException interruptedException) {
             LoggerError.log("Thread was interrupted", interruptedException);
             Thread.currentThread().interrupt();

@@ -36,7 +36,7 @@ public class ProducerDictionary implements Runnable {
         countDownLatch.countDown();
     }
 
-    private void putAllTheWordsLineInQueue(String line) {
+    public void putAllTheWordsLineInQueue(String line) {
         char symbolWord;
         StringBuilder word = new StringBuilder();
         for (int i = 0; i < line.length(); i++) {
