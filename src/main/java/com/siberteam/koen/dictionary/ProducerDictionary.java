@@ -21,10 +21,10 @@ public class ProducerDictionary implements Runnable {
     @Override
     public void run() {
         try {
-            String url = "";
+            String url;
             while ((url = urls.poll()) != null) {
                 UrlStreamWorker urlStreamWorker = new UrlStreamWorker(url);
-                String line = "";
+                String line;
                 while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
                     putAllTheWordsLineInQueue(line);
                 }
@@ -44,9 +44,9 @@ public class ProducerDictionary implements Runnable {
             if (Character.isLetterOrDigit(symbolWord) && symbolWord >= 224) {
                 word.append(symbolWord);
             }
-            if (Character.isWhitespace(symbolWord) ||
-                    isPunctuation(symbolWord) ||
-                    line.length() - 1 == i) {
+            if (Character.isWhitespace(symbolWord)
+                    || isPunctuation(symbolWord)
+                    || line.length() - 1 == i) {
                 if (checkWordIntoCorrect(word)) {
                     try {
                         wordsQueue.put(word.toString().toLowerCase());

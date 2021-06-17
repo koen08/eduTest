@@ -10,15 +10,12 @@ public class UrlStreamWorker {
     private final BufferedReader fileBufferedReader;
 
     public UrlStreamWorker(String url) throws IOException {
-        this.fileBufferedReader = new BufferedReader(
-                new InputStreamReader(new URL(url).openStream(), StandardCharsets.UTF_8)
-        );
+        this.fileBufferedReader = new BufferedReader(new InputStreamReader(new URL(url).openStream(),
+                StandardCharsets.UTF_8));
     }
 
     public String getLineFromUrlFile() throws IOException {
-        String line = "";
-        line = fileBufferedReader.readLine();
-        return line;
+        return fileBufferedReader.readLine();
     }
 
     public void closeFileReaderWithUrl() throws IOException {

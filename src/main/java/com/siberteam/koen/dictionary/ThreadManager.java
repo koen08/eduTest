@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.concurrent.*;
 
 public class ThreadManager {
+    private ConsumerDictionary consumerDictionary;
     private ExecutorService threadConsumer;
     private ExecutorService threadPool;
     private final Deque<String> urls;
@@ -15,21 +16,15 @@ public class ThreadManager {
         this.countThread = countThread;
     }
 
-    private ConsumerDictionary consumerDictionary;
-
     public void startThread() {
-        CountDownLatch countDownLatch = new CountDownLatch(countThread);
         BlockingQueue<String> wordQueue = new ArrayBlockingQueue<>(1024);
         consumerDictionary = new ConsumerDictionary(wordQueue);
-        threadPool = Executors.newFixedThreadPool(countThread);
-        threadConsumer = Executors.newSingleThreadExecutor();
         threadConsumer.execute(consumerDictionary);
+        threadConsumer = Executors.newSingleThreadExecutor();
+        threadPool = Executors.newFixedThreadPool(countThread);
+        CountDownLatch countDownLatch = new CountDownLatch(countThread);
         for (int i = 0; i < countThread; i++) {
-            threadPool.execute(new ProducerDictionary(
-                    wordQueue,
-                    urls,
-                    countDownLatch
-            ));
+            threadPool.execute(new ProducerDictionary(wordQueue, urls, countDownLatch));
         }
         try {
             countDownLatch.await();

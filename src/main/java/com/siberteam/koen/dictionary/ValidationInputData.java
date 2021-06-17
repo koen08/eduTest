@@ -15,8 +15,8 @@ public class ValidationInputData {
     private byte countThread;
     private CommandLine cmd;
 
-    public ValidationInputData(String[] args) throws FileException, IOException {
-        if (args.length == 0){
+    public ValidationInputData(String[] args) throws FileException, IOException, ParseException {
+        if (args.length == 0) {
             throw new FileException("Arguments is empty");
         }
         generateOption(args);
@@ -36,38 +36,34 @@ public class ValidationInputData {
         }
     }
 
-    private void generateOption(String[] args) {
-        try {
-            Options options = new Options();
-            Option propertyOption = Option.builder()
-                    .longOpt(INPUT)
-                    .argName(ARG_NAME)
-                    .hasArgs()
-                    .valueSeparator()
-                    .numberOfArgs(1)
-                    .build();
-            Option propertyOptionResults = Option.builder()
-                    .longOpt(OUTPUT)
-                    .argName(ARG_NAME)
-                    .hasArgs()
-                    .valueSeparator()
-                    .numberOfArgs(1)
-                    .build();
-            Option propertyOptionCountThread = Option.builder()
-                    .longOpt(THREAD)
-                    .argName(ARG_NAME)
-                    .hasArgs()
-                    .valueSeparator()
-                    .numberOfArgs(1)
-                    .build();
-            options.addOption(propertyOption);
-            options.addOption(propertyOptionResults);
-            options.addOption(propertyOptionCountThread);
-            CommandLineParser parser = new DefaultParser();
-            cmd = parser.parse(options, args);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    private void generateOption(String[] args) throws ParseException {
+        Options options = new Options();
+        Option propertyOption = Option.builder()
+                .longOpt(INPUT)
+                .argName(ARG_NAME)
+                .hasArgs()
+                .valueSeparator()
+                .numberOfArgs(1)
+                .build();
+        Option propertyOptionResults = Option.builder()
+                .longOpt(OUTPUT)
+                .argName(ARG_NAME)
+                .hasArgs()
+                .valueSeparator()
+                .numberOfArgs(1)
+                .build();
+        Option propertyOptionCountThread = Option.builder()
+                .longOpt(THREAD)
+                .argName(ARG_NAME)
+                .hasArgs()
+                .valueSeparator()
+                .numberOfArgs(1)
+                .build();
+        options.addOption(propertyOption);
+        options.addOption(propertyOptionResults);
+        options.addOption(propertyOptionCountThread);
+        CommandLineParser parser = new DefaultParser();
+        cmd = parser.parse(options, args);
     }
 
     public void checkExistsFile(String fileName) throws FileException, IOException {
