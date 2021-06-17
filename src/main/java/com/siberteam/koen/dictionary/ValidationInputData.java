@@ -16,7 +16,9 @@ public class ValidationInputData {
     private CommandLine cmd;
 
     public ValidationInputData(String[] args) throws FileException, IOException {
-        if (args.length == 0) throw new FileException("Arguments is empty");
+        if (args.length == 0){
+            throw new FileException("Arguments is empty");
+        }
         generateOption(args);
         if (cmd.hasOption(INPUT)) {
             inputFileNameArg = cmd.getOptionValue(INPUT);
