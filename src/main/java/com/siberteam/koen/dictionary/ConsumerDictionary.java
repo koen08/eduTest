@@ -21,7 +21,7 @@ public class ConsumerDictionary implements Runnable {
                 setWords.add(word);
             }
         } catch (InterruptedException interruptedException) {
-            LoggerError.log("Thread was interrupted", interruptedException);
+            LoggerConsole.logError("Thread was interrupted");
         }
     }
 

@@ -35,14 +35,14 @@ public class ThreadManager {
             countDownLatch.await();
             wordQueue.put("STOP");
         } catch (InterruptedException interruptedException) {
-            LoggerError.log("Thread was interrupted", interruptedException);
+            LoggerConsole.logError("Thread was interrupted");
         }
     }
 
     public void finishThread() {
         threadPool.shutdown();
         threadConsumer.shutdown();
-        System.out.println("Threads were closed");
+        LoggerConsole.logMessage("Threads were closed");
     }
 
     public ConsumerDictionary getConsumerDictionary() {

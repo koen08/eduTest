@@ -1,9 +1,6 @@
 package com.siberteam.koen.dictionary;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayDeque;
+import java.io.*;
 import java.util.Deque;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -17,29 +14,22 @@ public class FileStreamWorker {
         this.fileWriterName = fileWrite;
     }
 
-    public Deque<String> getStackUrl() {
+    public Deque<String> getStackUrl() throws IOException {
         Deque<String> urls = new ConcurrentLinkedDeque<>();
-        try {
-            try (FileBufferedReader readerFile = new FileBufferedReader(new FileInputStream(fileReaderName))) {
-                String line;
-                while ((line = readerFile.getLine()) != null) {
-                    urls.push(line);
-                }
+        try (BufferedReader readerFile = new BufferedReader(new FileReader(fileReaderName))) {
+            String line;
+            while ((line = readerFile.readLine()) != null) {
+                urls.push(line);
             }
-        } catch (FileNotFoundException e) {
-            LoggerError.log("File did not found", e);
         }
         return urls;
     }
 
-    public void writeResultsToFile(Set<String> setWords) {
-        try (FileBufferedWriter fileWriter = new FileBufferedWriter(new FileOutputStream(fileWriterName))) {
+    public void writeResultsToFile(Set<String> setWords) throws IOException {
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileWriterName))) {
             for (String setWord : setWords) {
-                fileWriter.writeTextLine(setWord);
+                fileWriter.write(setWord + System.lineSeparator());
             }
-        } catch (FileNotFoundException e) {
-            LoggerError.log("File not found", e);
         }
     }
-
 }

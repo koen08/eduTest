@@ -1,5 +1,6 @@
 package com.siberteam.koen.dictionary;
 
+import java.io.IOException;
 import java.util.Deque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
@@ -19,15 +20,21 @@ public class ProducerDictionary implements Runnable {
 
     @Override
     public void run() {
-        while (!urls.isEmpty()) {
-            String line = "";
-            UrlStreamWorker urlStreamWorker = new UrlStreamWorker(urls.pop());
-            while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
-                putAllTheWordsLineInQueue(line);
+        try {
+            String url = "";
+            while ((url = urls.poll()) != null) {
+                UrlStreamWorker urlStreamWorker = new UrlStreamWorker(url);
+                String line = "";
+                while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
+                    putAllTheWordsLineInQueue(line);
+                }
+                urlStreamWorker.closeFileReaderWithUrl();
             }
-            urlStreamWorker.closeFileReaderWithUrl();
+            countDownLatch.countDown();
+        } catch (IOException e) {
+            LoggerConsole.logError(e.getMessage());
+            countDownLatch.countDown();
         }
-        countDownLatch.countDown();
     }
 
     public void putAllTheWordsLineInQueue(String line) {
@@ -44,7 +51,7 @@ public class ProducerDictionary implements Runnable {
                     try {
                         wordsQueue.put(word.toString().toLowerCase());
                     } catch (InterruptedException e) {
-                        LoggerError.log("Thread was interrupted", e);
+                        LoggerConsole.logError("Thread was interrupted");
                     }
                 }
                 word.setLength(0);

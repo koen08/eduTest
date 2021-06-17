@@ -15,7 +15,8 @@ public class ValidationInputData {
     private byte countThread;
     private CommandLine cmd;
 
-    public ValidationInputData(String[] args) throws FileException {
+    public ValidationInputData(String[] args) throws FileException, IOException {
+        if (args.length == 0) throw new FileException("Arguments is empty");
         generateOption(args);
         if (cmd.hasOption(INPUT)) {
             inputFileNameArg = cmd.getOptionValue(INPUT);
@@ -28,8 +29,7 @@ public class ValidationInputData {
         if (cmd.hasOption(THREAD)) {
             countThread = Byte.parseByte(cmd.getOptionValue(THREAD));
             if (getCountThread() < 1) {
-                LoggerError.log("The number of threads cannot be less than 1",
-                        new FileException("Thread=" + getCountThread()));
+                throw new FileException("Threads = " + getCountThread());
             }
         }
     }
@@ -68,18 +68,13 @@ public class ValidationInputData {
         }
     }
 
-    public void checkExistsFile(String fileName) throws FileException {
+    public void checkExistsFile(String fileName) throws FileException, IOException {
         File myFile = new File(fileName);
         if (!myFile.exists()) {
-            try {
-                if (!myFile.createNewFile()) {
-                    throw new FileException("Error create file");
-                } else {
-                    LoggerError.log("File created", null);
-                }
-            } catch (IOException e) {
-                LoggerError.log("Error create file", e);
-                throw new FileException("Probably file name has invalid path");
+            if (!myFile.createNewFile()) {
+                throw new FileException("Error create file");
+            } else {
+                LoggerConsole.logMessage("File created");
             }
         }
     }

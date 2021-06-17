@@ -13,17 +13,12 @@ public class MainClass {
             Deque<String> stackUrl = fileStreamManager.getStackUrl();
             ThreadManager threadManager = new ThreadManager(stackUrl, validation.getCountThread());
             threadManager.startThread();
-            System.out.println("Program started");
+            LoggerConsole.logMessage("Program started");
             threadManager.finishThread();
             fileStreamManager.writeResultsToFile(threadManager.getConsumerDictionary().getSetWords());
-            System.out.println("Program completed successfully");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            LoggerError.log("No arguments in the program...",
-                    e);
-            System.exit(BASE_VALUE_FOR_ERROR);
-        } catch (FileException e) {
-            LoggerError.log(e.getMessage(),
-                    e);
+            LoggerConsole.logMessage("Program completed successfully");
+        } catch (Exception e) {
+            LoggerConsole.logError(e.getMessage());
             System.exit(BASE_VALUE_FOR_ERROR);
         }
     }

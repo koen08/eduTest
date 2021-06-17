@@ -4,6 +4,7 @@ import com.siberteam.koen.dictionary.ProducerDictionary;
 import com.siberteam.koen.dictionary.UrlStreamWorker;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class ConsumerTest {
             }
             urlStreamWorker.closeFileReaderWithUrl();
             assertEquals(getSetWordsExpected(), consumerDictionary.getSetWords());
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
     }
