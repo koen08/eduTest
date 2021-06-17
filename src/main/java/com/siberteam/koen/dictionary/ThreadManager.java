@@ -19,8 +19,8 @@ public class ThreadManager {
     public void startThread() {
         BlockingQueue<String> wordQueue = new ArrayBlockingQueue<>(1024);
         consumerDictionary = new ConsumerDictionary(wordQueue);
-        threadConsumer.execute(consumerDictionary);
         threadConsumer = Executors.newSingleThreadExecutor();
+        threadConsumer.execute(consumerDictionary);
         threadPool = Executors.newFixedThreadPool(countThread);
         CountDownLatch countDownLatch = new CountDownLatch(countThread);
         for (int i = 0; i < countThread; i++) {
