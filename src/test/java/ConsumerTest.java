@@ -1,11 +1,12 @@
 import com.siberteam.koen.dictionary.ConsumerDictionary;
-import com.siberteam.koen.dictionary.FileManager;
+import com.siberteam.koen.dictionary.FileStreamWorker;
 import com.siberteam.koen.dictionary.ProducerDictionary;
-import jdk.nashorn.internal.ir.Block;
+import com.siberteam.koen.dictionary.UrlStreamWorker;
 import org.junit.Test;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -19,25 +20,23 @@ public class ConsumerTest {
     @Test
     public void consumerDictionaryIsSuccess() {
         try {
-            FileManager fileManager = new FileManager("", "");
-            BlockingQueue<String> wordQueue = new ArrayBlockingQueue(1024);
-            BlockingQueue<String> urlQueue = new ArrayBlockingQueue<>(1024);
-            urlQueue.put("file:///home/koen/IdeaProjects/eduTest/src/main/resources/1.txt");
+            UrlStreamWorker urlStreamWorker = new UrlStreamWorker("file:///home/koen/IdeaProjects/eduTest/src/main/resources/1.txt");
+            BlockingQueue<String> wordsQueue = new ArrayBlockingQueue(1024);
+            Deque<String> urls = new ArrayDeque<>();
             ExecutorService threadConsumer = Executors.newSingleThreadExecutor();
-            ExecutorService threadPool = Executors.newFixedThreadPool(1);
-            ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue, null);
+            ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordsQueue);
             ProducerDictionary producerDictionary = new ProducerDictionary(
-                    wordQueue,
-                    urlQueue,
-                    null,
+                    wordsQueue,
+                    urls,
                     null
             );
             threadConsumer.execute(consumerDictionary);
-            List<String> listLine = fileManager.getLineFromUrlFile(urlQueue.take());
-            for (String line : listLine) {
-                producerDictionary.putAllTheWordsLineInQueue(line);
+            String line = "";
+            while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
                 Thread.sleep(5000);
+                producerDictionary.putAllTheWordsLineInQueue(line);
             }
+            urlStreamWorker.closeFileReaderWithUrl();
             assertEquals(getSetWordsExpected(), consumerDictionary.getSetWords());
         } catch (InterruptedException e) {
             e.printStackTrace();

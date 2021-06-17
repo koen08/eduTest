@@ -1,25 +1,30 @@
 package com.siberteam.koen.dictionary;
 
+import java.util.Deque;
+
 public class MainClass {
-    private static final byte EX_BASE = 64;
+    private static final byte BASE_VALUE_FOR_ERROR = 64;
 
     public static void main(String[] args) {
         try {
-            ValidationInputData validationInputData = new ValidationInputData(args);
-            FileManager fileManager = new FileManager(validationInputData.getInputFileNameArg(),
-                    validationInputData.getOutputFilNameArg());
-            ThreadManager threadManager = new ThreadManager(fileManager, validationInputData.getCountThread());
+            ValidationInputData validation = new ValidationInputData(args);
+            FileStreamWorker fileStreamManager = new FileStreamWorker(validation.getInputFileNameArg(),
+                    validation.getOutputFilNameArg());
+            Deque<String> stackUrl = fileStreamManager.getStackUrl();
+            ThreadManager threadManager = new ThreadManager(stackUrl, validation.getCountThread());
             threadManager.startThread();
-            System.out.println("Program completed successfully");
+            System.out.println("Program started");
             threadManager.finishThread();
-        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            fileStreamManager.writeResultsToFile(threadManager.getConsumerDictionary().getSetWords());
+            System.out.println("Program completed successfully");
+        } catch (ArrayIndexOutOfBoundsException e) {
             LoggerError.log("No arguments in the program...",
-                    arrayIndexOutOfBoundsException);
-            System.exit(EX_BASE);
-        } catch (FileException exception) {
-            LoggerError.log(exception.getMessage(),
-                    exception);
-            System.exit(EX_BASE);
+                    e);
+            System.exit(BASE_VALUE_FOR_ERROR);
+        } catch (FileException e) {
+            LoggerError.log(e.getMessage(),
+                    e);
+            System.exit(BASE_VALUE_FOR_ERROR);
         }
     }
 }

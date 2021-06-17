@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-public class FileWriter implements AutoCloseable {
+public class FileBufferedWriter implements AutoCloseable {
     private final BufferedWriter bufferedWriter;
 
-    public FileWriter(OutputStream outputStream) {
+    public FileBufferedWriter(OutputStream outputStream) {
         this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
     }
 

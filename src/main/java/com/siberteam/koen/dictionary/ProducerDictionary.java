@@ -1,46 +1,39 @@
 package com.siberteam.koen.dictionary;
 
-import java.util.List;
+import java.util.Deque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 
 public class ProducerDictionary implements Runnable {
-    private final BlockingQueue<String> wordQueue;
-    private final BlockingQueue<String> urlQueue;
+    private final BlockingQueue<String> wordsQueue;
+    private final Deque<String> urls;
     private final CountDownLatch countDownLatch;
-    private final FileManager fileManager;
 
-    public ProducerDictionary(BlockingQueue<String> wordQueue,
-                              BlockingQueue<String> urlQueue,
-                              CountDownLatch countDownLatch,
-                              FileManager fileManager) {
-        this.fileManager = fileManager;
+    public ProducerDictionary(BlockingQueue<String> wordsQueue,
+                              Deque<String> urls,
+                              CountDownLatch countDownLatch) {
         this.countDownLatch = countDownLatch;
-        this.wordQueue = wordQueue;
-        this.urlQueue = urlQueue;
+        this.wordsQueue = wordsQueue;
+        this.urls = urls;
     }
 
     @Override
     public void run() {
-        while (!urlQueue.isEmpty()) {
-            try {
-                List<String> listLine = fileManager.getLineFromUrlFile(urlQueue.take());
-                for (String line : listLine) {
-                    putAllTheWordsLineInQueue(line);
-                }
-            } catch (InterruptedException interruptedException) {
-                LoggerError.log("Thread was interrupted", interruptedException);
-                Thread.currentThread().interrupt();
+        while (!urls.isEmpty()) {
+            String line = "";
+            UrlStreamWorker urlStreamWorker = new UrlStreamWorker(urls.pop());
+            while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
+                putAllTheWordsLineInQueue(line);
             }
+            urlStreamWorker.closeFileReaderWithUrl();
         }
         countDownLatch.countDown();
     }
 
     public void putAllTheWordsLineInQueue(String line) {
-        char symbolWord;
         StringBuilder word = new StringBuilder();
         for (int i = 0; i < line.length(); i++) {
-            symbolWord = line.charAt(i);
+            char symbolWord = line.charAt(i);
             if (Character.isLetterOrDigit(symbolWord) && symbolWord >= 224) {
                 word.append(symbolWord);
             }
@@ -49,10 +42,9 @@ public class ProducerDictionary implements Runnable {
                     line.length() - 1 == i) {
                 if (checkWordIntoCorrect(word)) {
                     try {
-                        wordQueue.put(word.toString().toLowerCase());
+                        wordsQueue.put(word.toString().toLowerCase());
                     } catch (InterruptedException e) {
                         LoggerError.log("Thread was interrupted", e);
-                        Thread.currentThread().interrupt();
                     }
                 }
                 word.setLength(0);

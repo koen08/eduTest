@@ -1,33 +1,34 @@
 package com.siberteam.koen.dictionary;
 
+import java.util.Deque;
 import java.util.concurrent.*;
 
 public class ThreadManager {
     private ExecutorService threadConsumer;
     private ExecutorService threadPool;
-    private final FileManager fileManager;
+    private final Deque<String> urls;
     private final byte countThread;
 
-    public ThreadManager(FileManager fileManager,
+    public ThreadManager(Deque<String> urls,
                          byte countThread) {
-        this.fileManager = fileManager;
+        this.urls = urls;
         this.countThread = countThread;
     }
 
+    private ConsumerDictionary consumerDictionary;
+
     public void startThread() {
         CountDownLatch countDownLatch = new CountDownLatch(countThread);
-        BlockingQueue<String> queueUrl = fileManager.getQueueUrl();
-        BlockingQueue<String> wordQueue = new ArrayBlockingQueue(1024);
-        ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordQueue, fileManager);
+        BlockingQueue<String> wordQueue = new ArrayBlockingQueue<>(1024);
+        consumerDictionary = new ConsumerDictionary(wordQueue);
         threadPool = Executors.newFixedThreadPool(countThread);
         threadConsumer = Executors.newSingleThreadExecutor();
         threadConsumer.execute(consumerDictionary);
         for (int i = 0; i < countThread; i++) {
             threadPool.execute(new ProducerDictionary(
                     wordQueue,
-                    queueUrl,
-                    countDownLatch,
-                    fileManager
+                    urls,
+                    countDownLatch
             ));
         }
         try {
@@ -35,7 +36,6 @@ public class ThreadManager {
             wordQueue.put("STOP");
         } catch (InterruptedException interruptedException) {
             LoggerError.log("Thread was interrupted", interruptedException);
-            Thread.currentThread().interrupt();
         }
     }
 
@@ -43,5 +43,9 @@ public class ThreadManager {
         threadPool.shutdown();
         threadConsumer.shutdown();
         System.out.println("Threads were closed");
+    }
+
+    public ConsumerDictionary getConsumerDictionary() {
+        return consumerDictionary;
     }
 }

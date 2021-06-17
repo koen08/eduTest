@@ -7,11 +7,9 @@ import java.util.concurrent.BlockingQueue;
 public class ConsumerDictionary implements Runnable {
     private final BlockingQueue<String> blockingQueue;
     private final Set<String> setWords;
-    private final FileManager fileManager;
 
-    public ConsumerDictionary(BlockingQueue<String> blockingQueue, FileManager fileManager) {
+    public ConsumerDictionary(BlockingQueue<String> blockingQueue) {
         this.blockingQueue = blockingQueue;
-        this.fileManager = fileManager;
         setWords = new TreeSet<>();
     }
 
@@ -22,10 +20,8 @@ public class ConsumerDictionary implements Runnable {
             while (!(word = blockingQueue.take()).equals("STOP")) {
                 setWords.add(word);
             }
-            if (fileManager != null) fileManager.writeResultsToFile(setWords);
         } catch (InterruptedException interruptedException) {
             LoggerError.log("Thread was interrupted", interruptedException);
-            Thread.currentThread().interrupt();
         }
     }
 

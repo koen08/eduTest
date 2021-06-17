@@ -6,10 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-public class FileReader implements AutoCloseable {
+public class FileBufferedReader implements AutoCloseable {
     private BufferedReader reader;
 
-    public FileReader(InputStream inputStream) {
+    public FileBufferedReader(InputStream inputStream) {
         this.reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
     }
 
