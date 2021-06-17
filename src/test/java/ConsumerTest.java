@@ -1,5 +1,4 @@
 import com.siberteam.koen.dictionary.ConsumerDictionary;
-import com.siberteam.koen.dictionary.FileStreamWorker;
 import com.siberteam.koen.dictionary.ProducerDictionary;
 import com.siberteam.koen.dictionary.UrlStreamWorker;
 import org.junit.Test;
@@ -39,6 +38,7 @@ public class ConsumerTest {
             e.printStackTrace();
         }
     }
+
     private Set<String> getSetWordsExpected() {
         Set<String> setWordsExpected = new HashSet<>();
         setWordsExpected.add("второе");
