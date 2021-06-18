@@ -1,3 +1,5 @@
+package com.siberteam.koen.test.dictionary;
+
 import com.siberteam.koen.dictionary.ConsumerDictionary;
 import com.siberteam.koen.dictionary.ProducerDictionary;
 import com.siberteam.koen.dictionary.UrlStreamWorker;
@@ -20,15 +22,15 @@ public class ConsumerTest {
     @Test
     public void consumerDictionaryIsSuccess() {
         try {
-            UrlStreamWorker urlStreamWorker = new UrlStreamWorker("file:///home/koen/IdeaProjects/eduTest/src/main/resources/1.txt");
+            String pathFile = ConsumerTest.class.getResource("/1.txt").getPath();
+            UrlStreamWorker urlStreamWorker = new UrlStreamWorker("file:///" + pathFile);
             BlockingQueue<String> wordsQueue = new ArrayBlockingQueue(1024);
-            Deque<String> urls = new ArrayDeque<>();
             ExecutorService threadConsumer = Executors.newSingleThreadExecutor();
             ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordsQueue);
             ProducerDictionary producerDictionary = new ProducerDictionary(wordsQueue,
-                    urls, null);
+                    null, null);
             threadConsumer.execute(consumerDictionary);
-            String line = "";
+            String line;
             while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
                 Thread.sleep(5000);
                 producerDictionary.putAllTheWordsLineInQueue(line);
