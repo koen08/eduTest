@@ -1,7 +1,7 @@
 package com.siberteam.koen.dictionary;
 
-import java.io.IOException;
 import java.util.Deque;
+import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 
@@ -26,52 +26,23 @@ public class ProducerDictionary implements Runnable {
                 UrlStreamWorker urlStreamWorker = new UrlStreamWorker(url);
                 String line;
                 while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
-                    putAllTheWordsLineInQueue(line);
+                    putAllTheWordsLineInQueue(new StringTokenizer(line, " \t\n\r,."));
                 }
                 urlStreamWorker.closeFileReaderWithUrl();
             }
             countDownLatch.countDown();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LoggerConsole.logError(e.getMessage());
             countDownLatch.countDown();
         }
     }
 
-    public void putAllTheWordsLineInQueue(String line) {
-        StringBuilder word = new StringBuilder();
-        for (int i = 0; i < line.length(); i++) {
-            char symbolWord = line.charAt(i);
-            if (Character.isLetterOrDigit(symbolWord) && symbolWord >= 224) {
-                word.append(symbolWord);
-            }
-            if (Character.isWhitespace(symbolWord)
-                    || isPunctuation(symbolWord)
-                    || line.length() - 1 == i) {
-                if (checkWordIntoCorrect(word)) {
-                    try {
-                        wordsQueue.put(word.toString().toLowerCase());
-                    } catch (InterruptedException e) {
-                        LoggerConsole.logError("Thread was interrupted");
-                    }
-                }
-                word.setLength(0);
+    public void putAllTheWordsLineInQueue(StringTokenizer tokenizer) throws InterruptedException {
+        while (tokenizer.hasMoreTokens()) {
+            String word = tokenizer.nextToken().toLowerCase();
+            if (word.matches("[а-яё]*") && word.length() >= 3) {
+                wordsQueue.put(word);
             }
         }
-    }
-
-    private boolean isPunctuation(char symbolWord) {
-        return symbolWord >= 33 && symbolWord <= 47;
-    }
-
-    private boolean checkWordIntoCorrect(StringBuilder word) {
-        if (word.length() < 3) {
-            return false;
-        }
-        for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) < 224) {
-                return false;
-            }
-        }
-        return true;
     }
 }

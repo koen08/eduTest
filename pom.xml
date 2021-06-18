@@ -14,6 +14,11 @@
     </properties>
 
     <build>
+        <resources>
+            <resource>
+                <directory>/target/classes</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
