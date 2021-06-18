@@ -25,7 +25,8 @@ public class ConsumerTest {
             Deque<String> urls = new ArrayDeque<>();
             ExecutorService threadConsumer = Executors.newSingleThreadExecutor();
             ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordsQueue);
-            ProducerDictionary producerDictionary = new ProducerDictionary(wordsQueue, urls, null);
+            ProducerDictionary producerDictionary = new ProducerDictionary(wordsQueue,
+                    urls, null);
             threadConsumer.execute(consumerDictionary);
             String line = "";
             while ((line = urlStreamWorker.getLineFromUrlFile()) != null) {
