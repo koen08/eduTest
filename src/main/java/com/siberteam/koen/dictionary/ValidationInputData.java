@@ -15,7 +15,8 @@ public class ValidationInputData {
     private byte countThread;
     private CommandLine cmd;
 
-    public ValidationInputData(String[] args) throws FileException, IOException, ParseException {
+    public ValidationInputData(String[] args) throws FileException,
+            IOException, ParseException {
         if (args.length == 0) {
             throw new FileException("Arguments is empty");
         }
@@ -38,22 +39,19 @@ public class ValidationInputData {
 
     private void generateOption(String[] args) throws ParseException {
         Options options = new Options();
-        Option propertyOption = Option.builder()
-                .longOpt(INPUT)
+        Option propertyOption = Option.builder().longOpt(INPUT)
                 .argName(ARG_NAME)
                 .hasArgs()
                 .valueSeparator()
                 .numberOfArgs(1)
                 .build();
-        Option propertyOptionResults = Option.builder()
-                .longOpt(OUTPUT)
+        Option propertyOptionResults = Option.builder().longOpt(OUTPUT)
                 .argName(ARG_NAME)
                 .hasArgs()
                 .valueSeparator()
                 .numberOfArgs(1)
                 .build();
-        Option propertyOptionCountThread = Option.builder()
-                .longOpt(THREAD)
+        Option propertyOptionCountThread = Option.builder().longOpt(THREAD)
                 .argName(ARG_NAME)
                 .hasArgs()
                 .valueSeparator()
@@ -66,7 +64,8 @@ public class ValidationInputData {
         cmd = parser.parse(options, args);
     }
 
-    public void checkExistsFile(String fileName) throws FileException, IOException {
+    public void checkExistsFile(String fileName) throws FileException,
+            IOException {
         File myFile = new File(fileName);
         if (!myFile.exists()) {
             if (!myFile.createNewFile()) {
