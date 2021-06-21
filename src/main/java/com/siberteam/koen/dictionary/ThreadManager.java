@@ -17,16 +17,16 @@ public class ThreadManager {
     }
 
     public void startThread() {
-        BlockingQueue<String> wordQueue = new ArrayBlockingQueue<>(1024);
-        consumerDictionary = new ConsumerDictionary(wordQueue);
-        threadConsumer = Executors.newSingleThreadExecutor();
-        threadConsumer.execute(consumerDictionary);
-        threadPool = Executors.newFixedThreadPool(countThread);
-        CountDownLatch countDownLatch = new CountDownLatch(countThread);
-        for (int i = 0; i < countThread; i++) {
-            threadPool.execute(new ProducerDictionary(wordQueue, urls, countDownLatch));
-        }
         try {
+            BlockingQueue<String> wordQueue = new ArrayBlockingQueue<>(1024);
+            consumerDictionary = new ConsumerDictionary(wordQueue);
+            threadConsumer = Executors.newSingleThreadExecutor();
+            threadConsumer.execute(consumerDictionary);
+            threadPool = Executors.newFixedThreadPool(countThread);
+            CountDownLatch countDownLatch = new CountDownLatch(countThread);
+            for (int i = 0; i < countThread; i++) {
+                threadPool.execute(new ProducerDictionary(wordQueue, urls, countDownLatch));
+            }
             countDownLatch.await();
             wordQueue.put("STOP");
         } catch (InterruptedException interruptedException) {
