@@ -1,11 +1,12 @@
 package com.siberteam.koen.test.dictionary;
 
 import com.siberteam.koen.dictionary.ConsumerDictionary;
-import com.siberteam.koen.dictionary.LoggerConsole;
+import com.siberteam.koen.common.LoggerConsole;
 import com.siberteam.koen.dictionary.ProducerDictionary;
 import com.siberteam.koen.dictionary.UrlStreamWorker;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -21,8 +22,8 @@ public class ConsumerTest {
     @Test
     public void consumerDictionaryIsSuccess() {
         try {
-            String pathFile = ConsumerTest.class.getResource("/input.txt").getPath();
-            UrlStreamWorker urlStreamWorker = new UrlStreamWorker("file:///" + pathFile);
+            File file = new File("src/main/resources/input.txt");
+            UrlStreamWorker urlStreamWorker = new UrlStreamWorker("file:///" + file.getAbsolutePath());
             BlockingQueue<String> wordsQueue = new ArrayBlockingQueue(1024);
             ExecutorService threadConsumer = Executors.newSingleThreadExecutor();
             ConsumerDictionary consumerDictionary = new ConsumerDictionary(wordsQueue);

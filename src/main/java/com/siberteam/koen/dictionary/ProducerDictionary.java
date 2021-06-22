@@ -1,5 +1,7 @@
 package com.siberteam.koen.dictionary;
 
+import com.siberteam.koen.common.LoggerConsole;
+
 import java.util.Deque;
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;

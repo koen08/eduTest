@@ -1,5 +1,7 @@
 package com.siberteam.koen.dictionary;
 
+import com.siberteam.koen.common.FileException;
+import com.siberteam.koen.common.LoggerConsole;
 import org.apache.commons.cli.*;
 
 import java.io.File;

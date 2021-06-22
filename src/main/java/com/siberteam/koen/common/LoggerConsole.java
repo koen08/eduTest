@@ -1,4 +1,4 @@
-package com.siberteam.koen.dictionary;
+package com.siberteam.koen.common;
 
 public class LoggerConsole {
     public static final String ANSI_RED = "\u001B[31m";

@@ -29,10 +29,10 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
-                            <Main-Class>com.siberteam.koen.dictionary.MainClass</Main-Class>
+                            <Main-Class>com.siberteam.koen.anagram.MainClass</Main-Class>
                         </manifest>
                     </archive>
-
+                    <finalName>app</finalName>
                 </configuration>
             </plugin>
             <plugin>
